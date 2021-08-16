@@ -1,6 +1,7 @@
 import 'package:diffutil_dart/diffutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+
 import 'inherited_chat_theme.dart';
 import 'inherited_user.dart';
 
@@ -161,7 +162,10 @@ class _ChatListState extends State<ChatList>
         // Compare items to fire only on newly added messages
         if (oldMessage != message) {
           // Run only for sent message
-          if (message.author.id == InheritedUser.of(context).user.id) {
+          final isNewlyAdded = (message.createdAt ?? 0) >
+            (DateTime.now().millisecondsSinceEpoch - 5000);
+          if (message.author.id == InheritedUser.of(context).user.id &&
+            isNewlyAdded) {
             // Delay to give some time for Flutter to calculate new
             // size after new message was added
             Future.delayed(const Duration(milliseconds: 100), () {
