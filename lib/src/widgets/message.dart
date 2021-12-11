@@ -140,7 +140,8 @@ class Message extends StatelessWidget {
                     : color,
                 backgroundImage:
                     hasImage ? NetworkImage(message.author.imageUrl!) : null,
-                radius: 16,
+                radius:
+                    InheritedChatTheme.of(context).theme.userAvatarImageRadius,
                 child: !hasImage
                     ? Text(
                         initials,
@@ -152,7 +153,10 @@ class Message extends StatelessWidget {
               ),
             ),
           )
-        : const SizedBox(width: 40);
+        : SizedBox(
+            width:
+                InheritedChatTheme.of(context).theme.userAvatarImageRadius * 2 +
+                    8);
   }
 
   Widget _bubbleBuilder(

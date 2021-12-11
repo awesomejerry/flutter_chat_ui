@@ -86,6 +86,7 @@ abstract class ChatTheme {
     required this.sentMessageLinkDescriptionTextStyle,
     required this.sentMessageLinkTitleTextStyle,
     required this.statusIconPadding,
+    required this.userAvatarImageRadius,
     required this.userAvatarImageBackgroundColor,
     required this.userAvatarNameColors,
     required this.userAvatarTextStyle,
@@ -209,6 +210,9 @@ abstract class ChatTheme {
 
   /// Padding around status icons
   final EdgeInsetsGeometry statusIconPadding;
+
+  /// Radius of the user avatar image
+  final double userAvatarImageRadius;
 
   /// Color used as a background for user avatar if an image is provided.
   /// Visible if the image has some transparent parts.
@@ -335,6 +339,7 @@ class DefaultChatTheme extends ChatTheme {
     ),
     EdgeInsetsGeometry statusIconPadding =
         const EdgeInsets.symmetric(horizontal: 4),
+    double userAvatarImageRadius = 16,
     Color userAvatarImageBackgroundColor = Colors.transparent,
     List<Color> userAvatarNameColors = colors,
     TextStyle userAvatarTextStyle = const TextStyle(
@@ -388,6 +393,7 @@ class DefaultChatTheme extends ChatTheme {
               sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           statusIconPadding: statusIconPadding,
+          userAvatarImageRadius: userAvatarImageRadius,
           userAvatarImageBackgroundColor: userAvatarImageBackgroundColor,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,
@@ -503,6 +509,7 @@ class DarkChatTheme extends ChatTheme {
     ),
     EdgeInsetsGeometry statusIconPadding =
         const EdgeInsets.symmetric(horizontal: 4),
+    double userAvatarImageRadius = 16,
     Color userAvatarImageBackgroundColor = Colors.transparent,
     List<Color> userAvatarNameColors = colors,
     TextStyle userAvatarTextStyle = const TextStyle(
@@ -556,6 +563,7 @@ class DarkChatTheme extends ChatTheme {
               sentMessageLinkDescriptionTextStyle,
           sentMessageLinkTitleTextStyle: sentMessageLinkTitleTextStyle,
           statusIconPadding: statusIconPadding,
+          userAvatarImageRadius: userAvatarImageRadius,
           userAvatarImageBackgroundColor: userAvatarImageBackgroundColor,
           userAvatarNameColors: userAvatarNameColors,
           userAvatarTextStyle: userAvatarTextStyle,
