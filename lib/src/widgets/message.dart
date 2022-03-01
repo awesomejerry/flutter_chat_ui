@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:visibility_detector/visibility_detector.dart';
+
 import '../models/emoji_enlargement_behavior.dart';
 import '../util.dart';
 import 'file_message.dart';
@@ -24,10 +26,12 @@ class Message extends StatelessWidget {
     required this.message,
     required this.messageWidth,
     this.onAvatarTap,
+    this.onMessageDoubleTap,
     this.onMessageLongPress,
     this.onMessageStatusLongPress,
     this.onMessageStatusTap,
     this.onMessageTap,
+    this.onMessageVisibilityChanged,
     this.onPreviewDataFetched,
     required this.roundBorder,
     required this.showAvatar,
@@ -78,17 +82,24 @@ class Message extends StatelessWidget {
   // Called when uses taps on an avatar
   final void Function(types.User)? onAvatarTap;
 
+  /// Called when user double taps on any message
+  final void Function(BuildContext context, types.Message)? onMessageDoubleTap;
+
   /// Called when user makes a long press on any message
-  final void Function(types.Message)? onMessageLongPress;
+  final void Function(BuildContext context, types.Message)? onMessageLongPress;
 
   /// Called when user makes a long press on status icon in any message
-  final void Function(types.Message)? onMessageStatusLongPress;
+  final void Function(BuildContext context, types.Message)?
+      onMessageStatusLongPress;
 
   /// Called when user taps on status icon in any message
-  final void Function(types.Message)? onMessageStatusTap;
+  final void Function(BuildContext context, types.Message)? onMessageStatusTap;
 
   /// Called when user taps on any message
-  final void Function(types.Message)? onMessageTap;
+  final void Function(BuildContext context, types.Message)? onMessageTap;
+
+  /// Called when the message's visibility changes
+  final void Function(types.Message, bool visible)? onMessageVisibilityChanged;
 
   /// See [TextMessage.onPreviewDataFetched]
   final void Function(types.TextMessage, types.PreviewData)?
@@ -318,14 +329,28 @@ class Message extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onLongPress: () => onMessageLongPress?.call(message),
-                  onTap: () => onMessageTap?.call(message),
-                  child: _bubbleBuilder(
-                    context,
-                    _borderRadius,
-                    _currentUserIsAuthor,
-                    _enlargeEmojis,
-                  ),
+                  onDoubleTap: () => onMessageDoubleTap?.call(context, message),
+                  onLongPress: () => onMessageLongPress?.call(context, message),
+                  onTap: () => onMessageTap?.call(context, message),
+                  child: onMessageVisibilityChanged != null
+                      ? VisibilityDetector(
+                          key: Key(message.id),
+                          onVisibilityChanged: (visibilityInfo) =>
+                              onMessageVisibilityChanged!(message,
+                                  visibilityInfo.visibleFraction > 0.1),
+                          child: _bubbleBuilder(
+                            context,
+                            _borderRadius,
+                            _currentUserIsAuthor,
+                            _enlargeEmojis,
+                          ),
+                        )
+                      : _bubbleBuilder(
+                          context,
+                          _borderRadius,
+                          _currentUserIsAuthor,
+                          _enlargeEmojis,
+                        ),
                 ),
               ],
             ),
@@ -336,8 +361,8 @@ class Message extends StatelessWidget {
               child: showStatus
                   ? GestureDetector(
                       onLongPress: () =>
-                          onMessageStatusLongPress?.call(message),
-                      onTap: () => onMessageStatusTap?.call(message),
+                          onMessageStatusLongPress?.call(context, message),
+                      onTap: () => onMessageStatusTap?.call(context, message),
                       child: _statusBuilder(context),
                     )
                   : null,
